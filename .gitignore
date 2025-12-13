@@ -79,14 +79,14 @@ tmp/
 .eslintcache
 
 # # Next.js
-# .next/
-# out/
-# build/
+.next/
+out/
+build/
 
-# # Next.js production
-# frontend/.next/
-# frontend/out/
-# frontend/build/
+# Next.js production
+frontend/.next/
+frontend/out/
+frontend/build/
 
 # Package manager lock files (optional - uncomment if you want to ignore)
 # package-lock.json
