@@ -18,7 +18,6 @@ const poppins = Poppins({
 export const metadata = {
   title: "Finsight AI - Your AI-Powered Financial Companion",
   description: "Personal finance management platform for Africa with AI insights and voice interaction",
-    generator: 'v0.app'
 }
 
 export default function RootLayout({

@@ -86,7 +86,6 @@ export default function RegisterPage() {
               </p>
             </div>
 
-            {/* Terms & Conditions */}
             <label className="flex items-start space-x-2 cursor-pointer">
               <input
                 type="checkbox"
@@ -106,7 +105,6 @@ export default function RegisterPage() {
               </span>
             </label>
 
-            {/* Sign Up Button */}
             <Button
               className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-5"
               disabled={!agreeTerms}
@@ -114,7 +112,6 @@ export default function RegisterPage() {
               Create Account
             </Button>
 
-            {/* Divider */}
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-border"></div>
@@ -124,13 +121,10 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            {/* Google Sign Up */}
             <Button variant="outline" className="w-full bg-transparent border-border hover:bg-muted/50">
               <Google className="w-4 h-4 mr-2" />
               Sign up with Google
             </Button>
-
-            {/* Sign In Link */}
             <p className="text-center text-sm text-muted-foreground">
               Already have an account?{" "}
               <Link href="/login" className="text-primary hover:text-primary/80 transition-colors font-medium">
