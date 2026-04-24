@@ -74,6 +74,10 @@ coverage/
 .tmp/
 tmp/
 
+# Python
+__pycache__/
+*.py[cod]
+
 # Build artifacts
 *.tsbuildinfo
 .eslintcache
