@@ -73,10 +73,11 @@ class FinancialAccountSerializer(serializers.ModelSerializer):
             "currency",
             "balance_current_minor",
             "balance_available_minor",
+            "mono_account_id",
             "created_at",
             "updated_at",
         )
-        read_only_fields = ("id", "created_at", "updated_at")
+        read_only_fields = ("id", "mono_account_id", "created_at", "updated_at")
 
 
 # ---------------------------------------------------------------------------

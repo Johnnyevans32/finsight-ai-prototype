@@ -95,6 +95,7 @@ class FinancialAccount(TimestampedModel):
     currency = models.CharField(max_length=3)        # ISO 4217 e.g. "NGN"
     balance_current_minor = models.BigIntegerField(default=0)
     balance_available_minor = models.BigIntegerField(null=True, blank=True)
+    mono_account_id = models.CharField(max_length=100, null=True, blank=True, unique=True)
 
     def __str__(self):
         return f"{self.institution_name} – {self.user.email}"
@@ -137,6 +138,7 @@ class Transaction(TimestampedModel):
     description = models.TextField(blank=True)
     amount_minor = models.BigIntegerField()  # signed; negative = debit
     currency = models.CharField(max_length=3)
+    mono_id = models.CharField(max_length=100, null=True, blank=True, db_index=True)
     status = models.CharField(
         max_length=16,
         choices=TransactionStatus.choices,
