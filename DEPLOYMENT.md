@@ -13,8 +13,8 @@ docker-compose up --build -d
 ## Access Points
 
 - **Frontend**: http://localhost:3000
-- **Backend API**: http://localhost:8000/admin/
-- **API Docs**: http://localhost:8000/api/
+- **Backend API**: http://localhost:8000/api/
+- **Admin**: http://localhost:8000/admin/
 
 ## Demo Credentials
 

@@ -24,18 +24,22 @@ lerna-debug.log*
 .env.test.local
 .env.production.local
 
-# Backend (NestJS)
+# Backend (Django)
 backend/dist/
 backend/build/
 backend/.env
-backend/.env.*
+backend/.env.local
+backend/.env.development
+backend/.env.production
 
-# Frontend (Nuxt.js)
+# Frontend (Next.js)
 frontend/.nuxt/
 frontend/.output/
 frontend/dist/
 frontend/.env
-frontend/.env.*
+frontend/.env.local
+frontend/.env.development
+frontend/.env.production
 .nitro/
 .cache/
 
