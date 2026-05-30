@@ -41,20 +41,11 @@ export default function ConnectedBanksPage() {
 
   useEffect(() => { loadAccounts() }, [])
 
-  const handleConnect = async (code: string) => {
-    setConnecting(true)
-    try {
-      const account = await api.mono.exchange(code)
-      setAccounts((prev) => {
-        const exists = prev.find((a) => a.id === account.id)
-        return exists ? prev.map((a) => a.id === account.id ? account : a) : [account, ...prev]
-      })
-      toast.success("Bank account connected.")
-    } catch (err: any) {
-      toast.error(err?.message ?? "Failed to connect account.")
-    } finally {
-      setConnecting(false)
-    }
+  const handleConnectSuccess = async () => {
+    // Account connection is handled by webhook
+    // Just refresh the accounts list
+    toast.success("Bank account connection initiated. Processing...")
+    await loadAccounts()
   }
 
   const handleDisconnect = async (id: string) => {
@@ -81,10 +72,7 @@ export default function ConnectedBanksPage() {
             <p className="text-muted-foreground">Manage your linked bank accounts</p>
           </div>
           <MonoConnectButton
-            onSuccess={handleConnect}
-            customerName={user?.full_name}
-            customerEmail={user?.email}
-            loading={connecting}
+            onSuccess={handleConnectSuccess}
           />
         </div>
 

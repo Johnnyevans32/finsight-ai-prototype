@@ -27,7 +27,10 @@ export function MonoConnectButton({ onSuccess, customerName, customerEmail, clas
             email: customerEmail || "",
           },
         },
-        onSuccess: ({ code }: { code: string }) => onSuccess(code),
+        onSuccess: ({ code }: { code: string }) => {
+          console.log("🎯 Got Mono auth code:", code)
+          onSuccess(code)
+        },
         onClose: () => {},
       })
       monoRef.current.setup()

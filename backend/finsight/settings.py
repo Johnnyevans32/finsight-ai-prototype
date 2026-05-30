@@ -24,10 +24,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+wo5j7d&yn-x(bu9yg2u$h6&8kl7r^$3%7o(28il3mw#&dr572'
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-+wo5j7d&yn-x(bu9yg2u$h6&8kl7r^$3%7o(28il3mw#&dr572')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DEBUG', 'True').lower() in ('true', '1', 'yes', 'on')
 
 ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
@@ -138,10 +138,12 @@ AUTH_USER_MODEL = 'core.User'
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.BasicAuthentication',
     ],
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.IsAuthenticated',
     ],
+    'EXCEPTION_HANDLER': 'core.views.custom_exception_handler',
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
     'PAGE_SIZE': 20,
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
@@ -157,15 +159,12 @@ SPECTACULAR_SETTINGS = {
 # ---------------------------------------------------------------------------
 # CORS (allow the Next.js dev server to talk to the API)
 # ---------------------------------------------------------------------------
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
-CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = [
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-]
+CORS_ALLOWED_ORIGINS = os.environ.get(
+    'CORS_ALLOWED_ORIGINS',
+    'http://localhost:3000,http://127.0.0.1:3000'
+).split(',')
+CORS_ALLOW_CREDENTIALS = os.environ.get('CORS_ALLOW_CREDENTIALS', 'True').lower() in ('true', '1', 'yes', 'on')
+CSRF_TRUSTED_ORIGINS = CORS_ALLOWED_ORIGINS
 
 # ---------------------------------------------------------------------------
 # Mono API
@@ -174,7 +173,7 @@ MONO_SECRET_KEY = os.environ.get('MONO_SECRET_KEY', '')
 MONO_PUBLIC_KEY = os.environ.get('MONO_PUBLIC_KEY', '')
 
 # ---------------------------------------------------------------------------
-# OpenRouter AI
+# DeepSeek AI
 # ---------------------------------------------------------------------------
-OPENROUTER_API_KEY = os.environ.get('OPENROUTER_API_KEY', '')
-OPENROUTER_MODEL = 'meta-llama/llama-3.1-8b-instruct:free'
+DEEPSEEK_API_KEY = os.environ.get('DEEPSEEK_API_KEY', '')
+DEEPSEEK_MODEL = os.environ.get('DEEPSEEK_MODEL', 'deepseek-v4-flash')

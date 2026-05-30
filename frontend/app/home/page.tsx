@@ -39,6 +39,7 @@ export default function HomePage() {
   // Data state
   const [accounts, setAccounts] = useState<FinancialAccount[]>([])
   const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [allTransactions, setAllTransactions] = useState<Transaction[]>([]) // Store ALL for calculations
   const [goals, setGoals] = useState<SavingsGoal[]>([])
   const [dataLoading, setDataLoading] = useState(true)
   const [connectingBank, setConnectingBank] = useState(false)
@@ -56,13 +57,15 @@ export default function HomePage() {
 
   const loadData = useCallback(async () => {
     try {
-      const [acctRes, txnRes, goalRes] = await Promise.all([
+      const [acctRes, allTxnRes, goalRes] = await Promise.all([
         api.accounts.list(),
-        api.transactions.list({ page: 1 }),
+        api.transactions.list({ no_page: true }), // Get ALL transactions for accurate calculations
         api.goals.list(),
       ])
       setAccounts(acctRes.results)
-      setTransactions(Array.isArray(txnRes) ? txnRes.slice(0, 5) : txnRes.results.slice(0, 5))
+      const allTxnsData = Array.isArray(allTxnRes) ? allTxnRes : allTxnRes.results
+      setAllTransactions(allTxnsData) // Store ALL transactions for calculations
+      setTransactions(allTxnsData.slice(0, 5)) // Display only recent 5
       setGoals(goalRes.results)
     } catch {
       toast.error("Failed to load data.")
@@ -79,7 +82,7 @@ export default function HomePage() {
 
   const now = new Date()
   const monthStart = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
-  const monthlySpend = transactions
+  const monthlySpend = allTransactions
     .filter((t) => isDebit(t.amount_minor) && t.booked_at >= monthStart)
     .reduce((sum, t) => sum + Math.abs(t.amount_minor), 0)
 

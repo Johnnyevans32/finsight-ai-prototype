@@ -1,4 +1,39 @@
-# Finsight AI Prototype
+# Finsight AI - Personal Finance Management Platform
+
+🚀 **AI-powered personal finance platform for Nigerian users with bank account integration, transaction analysis, and intelligent financial insights.**
+
+## 🐳 Quick Start with Docker
+
+### Prerequisites
+- Docker and Docker Compose installed
+- Ports 3000 and 8000 available
+
+### Deploy the Application
+```bash
+# 1. Copy environment template (if needed)
+cp backend/.env.example backend/.env
+# Edit backend/.env with your API keys if different
+
+# 2. Build and start all services
+docker-compose up --build
+
+# Access the application
+# Frontend: http://localhost:3000
+# Backend API: http://localhost:8000
+
+# Demo credentials:
+# Email: test2@example.com
+# Password: testpassword123
+```
+
+## ✨ Features
+
+- 🏦 **Bank Integration**: Connect Nigerian banks via Mono Connect
+- 🤖 **AI Financial Intelligence**: DeepSeek V4 Flash analysis with 85+ data points
+- 📊 **Real-time Dashboard**: Live balance, transactions, spending analytics
+- 💬 **AI Assistant**: Natural language financial queries
+- 🎯 **Smart Insights**: Predictive analytics, risk assessment, personalized recommendations
+- 📱 **Mobile-ready**: Responsive design with modern UI
 
 ## Schema Design (Django ORM / Relational)
 

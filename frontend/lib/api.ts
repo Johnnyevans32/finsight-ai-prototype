@@ -26,6 +26,13 @@ async function apiFetch<T>(path: string, init: RequestInit = {}): Promise<T> {
     headers,
   })
   if (res.status === 204) return undefined as unknown as T
+  if (res.status === 401) {
+    const PUBLIC = ["/", "/login", "/register"]
+    if (!PUBLIC.includes(window.location.pathname)) {
+      window.location.replace("/login")
+    }
+    return undefined as unknown as T
+  }
   const data = await res.json().catch(() => null)
   if (!res.ok) {
     const err: any = new Error(data?.detail ?? `HTTP ${res.status}`)
@@ -224,6 +231,11 @@ export const api = {
   },
 
   mono: {
+    initiate: (redirectUrl?: string) =>
+      apiFetch<{ mono_url: string; customer_id: string; ref: string }>("/mono/initiate/", {
+        method: "POST",
+        body: JSON.stringify({ redirect_url: redirectUrl }),
+      }),
     exchange: (code: string) =>
       apiFetch<FinancialAccount>("/mono/exchange/", {
         method: "POST",
@@ -237,6 +249,39 @@ export const api = {
         method: "POST",
         body: JSON.stringify({ question }),
       }),
+    financialIntelligence: () =>
+      apiFetch<{
+        financial_health_score: number;
+        risk_level: "low" | "moderate" | "high" | "critical";
+        future_predictions: {
+          balance_3_months: number;
+          balance_6_months: number;
+          balance_12_months: number;
+        };
+        spending_insights: {
+          biggest_expense_category: string;
+          spending_trend: "increasing" | "stable" | "decreasing";
+          monthly_burn_rate: number;
+        };
+        smart_alerts: Array<{
+          type: "warning" | "opportunity" | "danger" | "success";
+          message: string;
+          priority: "low" | "medium" | "high" | "urgent";
+        }>;
+        investment_opportunities: string[];
+        financial_stress_indicators: {
+          stress_level: "minimal" | "low" | "moderate" | "high" | "severe";
+          key_stressors: string[];
+        };
+        actionable_recommendations: string[];
+        analysis_timestamp: string;
+        data_points_analyzed: {
+          accounts: number;
+          transactions: number;
+          time_period_days: number;
+          goals: number;
+        };
+      }>("/ai/financial-intelligence/"),
   },
 }
 
