@@ -98,3 +98,9 @@ frontend/build/
 # yarn.lock
 # pnpm-lock.yaml
 
+# # Testing/debugging files
+# cookies.txt
+# csrf_token.txt
+# *.cookies
+# *.csrf
+
