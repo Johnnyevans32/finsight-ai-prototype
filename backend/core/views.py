@@ -96,10 +96,15 @@ class CategoryViewSet(viewsets.ModelViewSet):
     serializer_class = CategorySerializer
 
     def get_queryset(self):
+        # Return both system categories and user's custom categories
         return (
             Category.objects.filter(user=self.request.user)
             | Category.objects.filter(is_system=True)
-        )
+        ).distinct()
+
+    def perform_create(self, serializer):
+        # When a user creates a category, it's their custom category
+        serializer.save(user=self.request.user, is_system=False)
 
 
 # ---------------------------------------------------------------------------
@@ -155,6 +160,67 @@ class TransactionViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    @action(detail=True, methods=["patch"])
+    def categorize(self, request, pk=None):
+        """Update transaction category"""
+        transaction = self.get_object()
+        category_id = request.data.get("category_id")
+
+        if category_id:
+            try:
+                category = Category.objects.get(id=category_id)
+                transaction.category = category
+                transaction.save()
+                return Response(TransactionSerializer(transaction).data)
+            except Category.DoesNotExist:
+                return Response(
+                    {"detail": "Category not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        else:
+            transaction.category = None
+            transaction.save()
+            return Response(TransactionSerializer(transaction).data)
+
+    @action(detail=False, methods=["post"])
+    def auto_categorize(self, request):
+        """Auto-categorize all uncategorized transactions"""
+        from .categorization import bulk_categorize_transactions
+
+        uncategorized = self.get_queryset().filter(category__isnull=True)
+        categorized = bulk_categorize_transactions(uncategorized)
+
+        return Response({
+            "categorized": len(categorized),
+            "message": f"Successfully categorized {len(categorized)} transactions"
+        })
+
+    @action(detail=True, methods=["get"])
+    def suggest_categories(self, request, pk=None):
+        """Get category suggestions for a transaction"""
+        from .categorization import get_category_suggestions
+
+        transaction = self.get_object()
+        suggestions = get_category_suggestions(
+            transaction.description or '',
+            transaction.merchant_name or '',
+            transaction.amount_minor
+        )
+
+        # Get or create suggested categories
+        suggested_categories = []
+        for cat_name in suggestions:
+            category, created = Category.objects.get_or_create(
+                name=cat_name,
+                defaults={
+                    'kind': 'income' if transaction.amount_minor > 0 else 'expense',
+                    'is_system': True
+                }
+            )
+            suggested_categories.append(CategorySerializer(category).data)
+
+        return Response(suggested_categories)
 
 
 # ---------------------------------------------------------------------------

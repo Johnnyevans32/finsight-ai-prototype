@@ -1,23 +1,30 @@
-"use client"
+"use client";
 
-import { useEffect, useRef } from "react"
-import { Button } from "@/components/ui/button"
-import { Building2, Loader2 } from "lucide-react"
+import { useEffect, useRef } from "react";
+import { Button } from "@/components/ui/button";
+import { Building2, Loader2 } from "lucide-react";
 
 interface Props {
-  onSuccess: (code: string) => void
-  customerName?: string
-  customerEmail?: string
-  className?: string
-  loading?: boolean
+  onSuccess: (code: string) => void;
+  customerName?: string;
+  customerEmail?: string;
+  className?: string;
+  loading?: boolean;
 }
 
-export function MonoConnectButton({ onSuccess, customerName, customerEmail, className, loading }: Props) {
-  const monoRef = useRef<any>(null)
-  const publicKey = process.env.NEXT_PUBLIC_MONO_PUBLIC_KEY ?? ""
+export function MonoConnectButton({
+  onSuccess,
+  customerName,
+  customerEmail,
+  className,
+  loading,
+}: Props) {
+  const monoRef = useRef<any>(null);
+  const publicKey =
+    process.env.NEXT_PUBLIC_MONO_PUBLIC_KEY ?? "test_pk_motvesx7zhebqcgkvyi0";
 
   useEffect(() => {
-    if (!publicKey || monoRef.current) return
+    if (!publicKey || monoRef.current) return;
     import("@mono.co/connect.js").then(({ default: MonoConnect }) => {
       monoRef.current = new MonoConnect({
         key: publicKey,
@@ -28,14 +35,14 @@ export function MonoConnectButton({ onSuccess, customerName, customerEmail, clas
           },
         },
         onSuccess: ({ code }: { code: string }) => {
-          console.log("🎯 Got Mono auth code:", code)
-          onSuccess(code)
+          console.log("🎯 Got Mono auth code:", code);
+          onSuccess(code);
         },
         onClose: () => {},
-      })
-      monoRef.current.setup()
-    })
-  }, [publicKey, customerName, customerEmail, onSuccess])
+      });
+      monoRef.current.setup();
+    });
+  }, [publicKey, customerName, customerEmail, onSuccess]);
 
   return (
     <Button
@@ -51,5 +58,5 @@ export function MonoConnectButton({ onSuccess, customerName, customerEmail, clas
       )}
       {publicKey ? "Connect Bank Account" : "Bank Connect (key not set)"}
     </Button>
-  )
+  );
 }

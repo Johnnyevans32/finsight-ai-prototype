@@ -69,10 +69,10 @@ export interface Transaction {
   id: string
   account: string
   account_name: string
-  category: string | null
+  category?: Category | null
   category_name: string | null
   merchant_name: string
-  description: string
+  description?: string
   amount_minor: number
   currency: string
   status: string
@@ -186,6 +186,18 @@ export const api = {
     update: (id: string, data: Partial<Pick<Transaction, "category" | "merchant_name" | "description" | "status">>) =>
       apiFetch<Transaction>(`/transactions/${id}/`, { method: "PATCH", body: JSON.stringify(data) }),
     delete: (id: string) => apiFetch<void>(`/transactions/${id}/`, { method: "DELETE" }),
+    categorize: (id: string, categoryId: string | null) =>
+      apiFetch<Transaction>(`/transactions/${id}/categorize/`, {
+        method: "PATCH",
+        body: JSON.stringify({ category_id: categoryId })
+      }),
+    suggestCategories: (id: string) =>
+      apiFetch<Category[]>(`/transactions/${id}/suggest_categories/`),
+    autoCategorize: () =>
+      apiFetch<{ categorized: number; message: string }>("/transactions/auto_categorize/", {
+        method: "POST",
+        body: JSON.stringify({})
+      }),
   },
 
   categories: {
